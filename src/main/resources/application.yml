@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: creditCard
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: demo
+
+server:
+  port: 8085
+#  error:
+#    include-stacktrace: NEVER
