@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -145,24 +144,5 @@ public class CreditCardController {
         return creditCardService.getCreditCards(customerId);
     }
 
-    /**
-     * DELETE : Delete an Credit Card exists
-     *
-     * @param creditCardId (required)
-     * @return Ok (status code 200)
-     */
-    @Operation(
-        operationId = "creditCardDelete",
-        summary = "Delete a new Credit Card",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Deleted")
-        }
-    )
-    @DeleteMapping("/{creditCardId}")
-    public Mono<Void> creditCardDelete(
-        @Parameter(name = "creditCardId", description = "", required = true, in = ParameterIn.PATH)
-        @PathVariable("creditCardId") String creditCardId
-    ) {
-        return creditCardService.deleteCreditCard(creditCardId);
-    }
+
 }

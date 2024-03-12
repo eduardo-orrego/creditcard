@@ -15,6 +15,5 @@ public interface CreditCardService {
 
     Flux<CreditCard> getCreditCards(String customerId);
 
-    Mono<Void> deleteCreditCard(String creditCardId);
 
 }

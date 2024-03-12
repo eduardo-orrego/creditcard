@@ -63,16 +63,4 @@ public class CreditCardServiceImpl implements CreditCardService {
             .doOnComplete(() -> log.info("Successful search - customerId: ".concat(customerId)));
     }
 
-    @Override
-    public Mono<Void> deleteCreditCard(String creditCardId) {
-        return creditCardRepository.existsById(creditCardId)
-            .flatMap(aBoolean -> {
-                if (Boolean.TRUE.equals(aBoolean)) {
-                    return creditCardRepository.deleteById(creditCardId);
-                }
-                return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit Card not found - " +
-                    "creditCardId: ".concat(creditCardId)));
-            })
-            .doOnSuccess(customer -> log.info("Successful delete - creditCardId: ".concat(creditCardId)));
-    }
 }

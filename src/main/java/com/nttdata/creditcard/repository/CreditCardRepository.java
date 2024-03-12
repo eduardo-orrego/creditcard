@@ -14,6 +14,4 @@ public interface CreditCardRepository extends ReactiveMongoRepository<CreditCard
 
     Flux<CreditCard> findByCustomerId(String customerId);
 
-    Mono<Boolean> existsByCustomerId(String customerId);
-
 }
