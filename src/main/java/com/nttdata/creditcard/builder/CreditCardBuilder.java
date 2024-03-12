@@ -37,7 +37,7 @@ public class CreditCardBuilder {
     }
 
     private static BigInteger generateCardNumber() {
-        String cardNumber = "20".concat(
+        String cardNumber = "40".concat(
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
         return new BigInteger(cardNumber);
     }
