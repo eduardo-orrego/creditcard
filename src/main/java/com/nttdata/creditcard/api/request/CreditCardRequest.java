@@ -3,7 +3,8 @@ package com.nttdata.creditcard.api.request;
 import com.nttdata.creditcard.enums.DebitCardStatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.math.BigDecimal;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -17,15 +18,17 @@ public class CreditCardRequest {
 
     @NotNull(message = "El campo 'status' no puede ser nulo")
     private DebitCardStatusEnum status;
+    @NotBlank(message = "El campo 'customerDocument' no puede ser vacío")
+    private BigInteger customerDocument;
+    @NotNull(message = "El campo 'creditNumber' no puede ser vacío")
+    private BigInteger creditNumber;
+
+    @Size(min = 16, max = 16)
+    @Pattern(regexp = "^[45]\\d{15}$")
+    private BigInteger cardNumber;
+    @Size(min = 3, max = 3)
+    private Integer cvv;
     private LocalDate expirationDate;
     private LocalDate activateDate;
-    private String cvv;
-    private BigInteger cardNumber;
-    @NotBlank(message = "El campo 'customerId' no puede ser vacío")
-    private String customerId;
-    private BigDecimal interestRate;
-    private BigDecimal availableBalance;
-    @NotNull(message = "El campo 'creditLimit' no puede ser nulo")
-    private BigDecimal creditLimit;
 
 }

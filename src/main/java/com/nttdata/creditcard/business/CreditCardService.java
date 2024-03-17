@@ -13,7 +13,7 @@ public interface CreditCardService {
 
     Mono<CreditCard> getCreditCard(BigInteger cardNumber);
 
-    Flux<CreditCard> getCreditCards(String customerId);
+    Flux<CreditCard> getCreditCards(BigInteger customerDocument);
 
 
 }
