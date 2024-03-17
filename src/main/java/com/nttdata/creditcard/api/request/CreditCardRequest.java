@@ -18,7 +18,7 @@ public class CreditCardRequest {
 
     @NotNull(message = "El campo 'status' no puede ser nulo")
     private DebitCardStatusEnum status;
-    @NotBlank(message = "El campo 'customerDocument' no puede ser vacío")
+    @NotNull(message = "El campo 'customerDocument' no puede ser vacío")
     private BigInteger customerDocument;
     @NotNull(message = "El campo 'creditNumber' no puede ser vacío")
     private BigInteger creditNumber;
