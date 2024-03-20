@@ -18,49 +18,53 @@ import reactor.core.publisher.Mono;
 @Service
 public class CreditCardServiceImpl implements CreditCardService {
 
-    private final CreditCardRepository creditCardRepository;
-
     @Autowired
-    public CreditCardServiceImpl(CreditCardRepository creditCardRepository) {
-        this.creditCardRepository = creditCardRepository;
-    }
+    private CreditCardRepository creditCardRepository;
 
     @Override
     public Mono<CreditCard> saveCreditCard(CreditCardRequest creditCardRequest) {
-        return Mono.just(creditCardRequest)
-            .map(creditCard -> CreditCardBuilder.toCreditCardEntity(creditCard, null))
-            .flatMap(creditCardRepository::save)
-            .doOnSuccess(customer -> log.info("Successful save - creditCardId: ".concat(customer.getId())));
+
+        return creditCardRepository.findExistsCreditCard(creditCardRequest.getCardNumber())
+            .flatMap(aBoolean -> {
+                if (Boolean.FALSE.equals(aBoolean)) {
+                    return creditCardRepository.saveCreditCard(CreditCardBuilder.toCreditCardEntity(creditCardRequest));
+
+                }
+                return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "There is another Credit Card with the same Credit Number: "
+                        .concat(creditCardRequest.getCardNumber().toString())));
+            });
+
     }
 
     @Override
     public Mono<CreditCard> updateCreditCard(CreditCardRequest creditCardRequest, String creditCardId) {
-        return creditCardRepository.existsById(creditCardId)
-            .flatMap(aBoolean -> {
-                if (Boolean.TRUE.equals(aBoolean)) {
-                    return creditCardRepository.save(
-                        CreditCardBuilder.toCreditCardEntity(creditCardRequest, creditCardId));
+        return creditCardRepository.findCreditCard(creditCardId)
+            .flatMap(creditCardCurrent -> {
+                if (creditCardRequest.getCardNumber().compareTo(creditCardCurrent.getCardNumber()) == 0) {
+                    return creditCardRepository.saveCreditCard(CreditCardBuilder.toCreditCardEntity(creditCardRequest,
+                        creditCardCurrent));
                 }
-                return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit Card not found - "
-                    + "creditCardId: ".concat(creditCardId)));
+
+                return this.saveCreditCard(creditCardRequest);
             })
-            .doOnSuccess(account -> log.info("Successful update - creditCardId: ".concat(creditCardId)));
+            .switchIfEmpty(Mono.defer(() -> Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Credit Card not found - creditCardId: ".concat(creditCardId)))));
     }
 
     @Override
     public Mono<CreditCard> getCreditCard(BigInteger cardNumber) {
-        return creditCardRepository.findByCardNumber(cardNumber)
+        return creditCardRepository.findCreditCard(cardNumber)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit Card not found - "
-                + "creditNumber: ".concat(cardNumber.toString()))))
-            .doOnSuccess(customer -> log.info("Successful search - cardNumber: ".concat(cardNumber.toString())));
+                + "creditNumber: ".concat(cardNumber.toString()))));
+
     }
 
     @Override
-    public Flux<CreditCard> getCreditCards(String customerId) {
-        return creditCardRepository.findByCustomerId(customerId)
+    public Flux<CreditCard> getCreditCards(BigInteger customerDocument) {
+        return creditCardRepository.findCreditCards(customerDocument)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit Card not found - "
-                + "customerId: ".concat(customerId))))
-            .doOnComplete(() -> log.info("Successful search - customerId: ".concat(customerId)));
+                + "customerDocument: ".concat(customerDocument.toString()))));
     }
 
 }

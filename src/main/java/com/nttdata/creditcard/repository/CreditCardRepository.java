@@ -2,16 +2,18 @@ package com.nttdata.creditcard.repository;
 
 import com.nttdata.creditcard.model.CreditCard;
 import java.math.BigInteger;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Repository
-public interface CreditCardRepository extends ReactiveMongoRepository<CreditCard, String> {
+public interface CreditCardRepository {
 
-    Mono<CreditCard> findByCardNumber(BigInteger cardNumber);
+    Mono<CreditCard> findCreditCard(BigInteger cardNumber);
 
-    Flux<CreditCard> findByCustomerId(String customerId);
+    Mono<CreditCard> findCreditCard(String creditCardId);
 
+    Flux<CreditCard> findCreditCards(BigInteger customerDocument);
+
+    Mono<CreditCard> saveCreditCard(CreditCard creditCard);
+
+    Mono<Boolean> findExistsCreditCard(BigInteger cardNumber);
 }

@@ -120,7 +120,7 @@ public class CreditCardController {
     /**
      * GET : Get a list of Credit Cards by customer
      *
-     * @param customerId (required)
+     * @param customerDocument (required)
      * @return OK (status code 200)
      */
     @Operation(
@@ -138,10 +138,10 @@ public class CreditCardController {
         produces = {"application/json"}
     )
     public Flux<CreditCard> creditCardsGet(
-        @NotNull @Parameter(name = "customerId", description = "", required = true, in = ParameterIn.QUERY)
-        @Validated @RequestParam(value = "customerId") String customerId
+        @NotNull @Parameter(name = "customerDocument", description = "", required = true, in = ParameterIn.QUERY)
+        @Validated @RequestParam(value = "customerDocument") BigInteger customerDocument
     ) {
-        return creditCardService.getCreditCards(customerId);
+        return creditCardService.getCreditCards(customerDocument);
     }
 
 
