@@ -25,124 +25,136 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Class: CreditCardController. <br/>
+ * <b>Bootcamp NTTDATA</b><br/>
+ *
+ * @author NTTDATA
+ * @version 1.0
+ *   <u>Developed by</u>:
+ *   <ul>
+ *   <li>Developer Carlos</li>
+ *   </ul>
+ * @since 1.0
+ */
 @RestController
 @RequestMapping(value = "/api/creditCards")
 public class CreditCardController {
-    private final CreditCardService creditCardService;
 
-    @Autowired
-    CreditCardController(CreditCardService creditCardService) {
-        this.creditCardService = creditCardService;
+  @Autowired
+  private CreditCardService creditCardService;
+
+  /**
+   * POST : Create a new Credit Card.
+   *
+   * @param creditCard (required)
+   * @return Created (status code 201)
+   */
+  @Operation(
+    operationId = "creditCardPost",
+    summary = "Create a new Credit Card",
+    responses = {
+      @ApiResponse(responseCode = "201", description = "Created", content = {
+        @Content(mediaType = "application/json",
+          schema = @Schema(implementation = CreditCard.class))
+      })
     }
+  )
+  @PostMapping(
+    value = "",
+    produces = {"application/json"},
+    consumes = {"application/json"}
+  )
+  public Mono<CreditCard> creditCardPost(
+    @Validated @RequestBody(required = false) CreditCardRequest creditCard
+  ) {
+    return creditCardService.saveCreditCard(creditCard);
+  }
 
-    /**
-     * POST : Create a new Credit Card
-     *
-     * @param creditCard (required)
-     * @return Created (status code 201)
-     */
-    @Operation(
-        operationId = "creditCardPost",
-        summary = "Create a new Credit Card",
-        responses = {
-            @ApiResponse(responseCode = "201", description = "Created", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreditCard.class))
-            })
-        }
-    )
-    @PostMapping(
-        value = "",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
-    public Mono<CreditCard> creditCardPost(
-        @Validated @RequestBody(required = false) CreditCardRequest creditCard
-    ) {
-        return creditCardService.saveCreditCard(creditCard);
+  /**
+   * PUT : Update a Credit Card exists.
+   *
+   * @param creditCardId (required)
+   * @param creditCard   (required)
+   * @return Ok (status code 200)
+   */
+  @Operation(
+    operationId = "creditCardPut",
+    summary = "Update a Credit Card",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "Updated", content = {
+        @Content(mediaType = "application/json",
+          schema = @Schema(implementation = CreditCard.class))
+      })
     }
+  )
+  @PutMapping(
+    value = "/{creditCardId}",
+    produces = {"application/json"},
+    consumes = {"application/json"}
+  )
+  public Mono<CreditCard> creditCardPut(
+    @Parameter(name = "creditCardId", description = "", required = true, in = ParameterIn.PATH)
+    @PathVariable("creditCardId") String creditCardId,
+    @Validated @RequestBody CreditCardRequest creditCard
+  ) {
+    return creditCardService.updateCreditCard(creditCard, creditCardId);
+  }
 
-    /**
-     * PUT : Update a Credit Card exists
-     *
-     * @param creditCardId (required)
-     * @param creditCard   (required)
-     * @return Ok (status code 200)
-     */
-    @Operation(
-        operationId = "creditCardPut",
-        summary = "Update a Credit Card",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Updated", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreditCard.class))
-            })
-        }
-    )
-    @PutMapping(
-        value = "/{creditCardId}",
-        produces = {"application/json"},
-        consumes = {"application/json"}
-    )
-    public Mono<CreditCard> creditCardPut(
-        @Parameter(name = "creditCardId", description = "", required = true, in = ParameterIn.PATH)
-        @PathVariable("creditCardId") String creditCardId,
-        @Validated @RequestBody CreditCardRequest creditCard
-    ) {
-        return creditCardService.updateCreditCard(creditCard, creditCardId);
+  /**
+   * GET /{cardNumber} : Get information about a specific Credit Card.
+   *
+   * @param cardNumber (required)
+   * @return OK (status code 200)
+   */
+  @Operation(
+    operationId = "creditCardGet",
+    summary = "Get information about a specific Credit Card",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "OK", content = {
+        @Content(mediaType = "application/json",
+          schema = @Schema(implementation = CreditCard.class))
+      })
     }
+  )
+  @GetMapping(
+    value = "/{cardNumber}",
+    produces = {"application/json"}
+  )
+  public Mono<CreditCard> creditCardGet(
+    @Parameter(name = "cardNumber", description = "", required = true, in = ParameterIn.PATH)
+    @PathVariable("cardNumber") BigInteger cardNumber
+  ) {
+    return creditCardService.getCreditCard(cardNumber);
+  }
 
-    /**
-     * GET /{cardNumber} : Get information about a specific Credit Card
-     *
-     * @param cardNumber (required)
-     * @return OK (status code 200)
-     */
-    @Operation(
-        operationId = "creditCardGet",
-        summary = "Get information about a specific Credit Card",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "OK", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreditCard.class))
-            })
-        }
-    )
-    @GetMapping(
-        value = "/{cardNumber}",
-        produces = {"application/json"}
-    )
-    public Mono<CreditCard> creditCardGet(
-        @Parameter(name = "cardNumber", description = "", required = true, in = ParameterIn.PATH)
-        @PathVariable("cardNumber") BigInteger cardNumber
-    ) {
-        return creditCardService.getCreditCard(cardNumber);
+
+  /**
+   * GET : Get a list of Credit Cards by customer.
+   *
+   * @param customerDocument (required)
+   * @return OK (status code 200)
+   */
+  @Operation(
+    operationId = "creditCardsGet",
+    summary = "Get a list of Credit Cards for the user",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "OK", content = {
+        @Content(mediaType = "application/json",
+          array = @ArraySchema(schema = @Schema(implementation = CreditCard.class)))
+      })
     }
-
-
-    /**
-     * GET : Get a list of Credit Cards by customer
-     *
-     * @param customerDocument (required)
-     * @return OK (status code 200)
-     */
-    @Operation(
-        operationId = "creditCardsGet",
-        summary = "Get a list of Credit Cards for the user",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "OK", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation =
-                    CreditCard.class)))
-            })
-        }
-    )
-    @GetMapping(
-        value = "",
-        produces = {"application/json"}
-    )
-    public Flux<CreditCard> creditCardsGet(
-        @NotNull @Parameter(name = "customerDocument", description = "", required = true, in = ParameterIn.QUERY)
-        @Validated @RequestParam(value = "customerDocument") BigInteger customerDocument
-    ) {
-        return creditCardService.getCreditCards(customerDocument);
-    }
-
+  )
+  @GetMapping(
+    value = "",
+    produces = {"application/json"}
+  )
+  public Flux<CreditCard> creditCardsGet(
+    @NotNull @Parameter(name = "customerDocument", description = "", required = true,
+      in = ParameterIn.QUERY)
+    @Validated @RequestParam(value = "customerDocument") BigInteger customerDocument
+  ) {
+    return creditCardService.getCreditCards(customerDocument);
+  }
 
 }
