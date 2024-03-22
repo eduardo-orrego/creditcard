@@ -56,7 +56,7 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
 
     @Override
     public Mono<Boolean> findExistsCreditCard(BigInteger cardNumber) {
-        return creditCardReactiveMongodb.findExistsByCardNumber(cardNumber)
+        return creditCardReactiveMongodb.existsByCardNumber(cardNumber)
             .doOnSuccess(result -> log.info("Successful find exists - cardNumber: ".concat(cardNumber.toString())));
     }
 

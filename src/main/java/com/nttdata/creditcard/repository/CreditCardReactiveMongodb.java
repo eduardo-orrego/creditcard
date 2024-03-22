@@ -26,6 +26,6 @@ public interface CreditCardReactiveMongodb extends ReactiveMongoRepository<Credi
 
   Flux<CreditCard> findByCustomerDocument(BigInteger customerDocument);
 
-  Mono<Boolean> findExistsByCardNumber(BigInteger cardNumber);
+  Mono<Boolean> existsByCardNumber(BigInteger cardNumber);
 
 }
