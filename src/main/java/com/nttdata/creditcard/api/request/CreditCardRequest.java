@@ -2,8 +2,6 @@ package com.nttdata.creditcard.api.request;
 
 import com.nttdata.creditcard.enums.DebitCardStatusEnum;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -38,10 +36,7 @@ public class CreditCardRequest {
   @NotNull(message = "El campo 'creditNumber' no puede ser vacío")
   private BigInteger creditNumber;
 
-  @Size(min = 16, max = 16)
-  @Pattern(regexp = "^[45]\\d{15}$")
   private BigInteger cardNumber;
-  @Size(min = 3, max = 3)
   private Integer cvv;
   private LocalDate expirationDate;
   private LocalDate activateDate;
